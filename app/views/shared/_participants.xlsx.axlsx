@@ -1,0 +1,41 @@
+wb = xlsx_package.workbook
+
+title = wb.styles.add_style(
+	:bg_color=>"666666",
+	:fg_color=>"ffffff",
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] },
+	:alignment=>{:horizontal => :center}
+)
+body = wb.styles.add_style(
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] },
+	:alignment => {:vertical => :center}
+)
+center = wb.styles.add_style(
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] },
+        :alignment=>{:horizontal => :center, :vertical => :center}
+)
+
+wb.add_worksheet(name: "Participants") do |sheet|
+  # Create the header row
+  sheet.add_row ["#", "Numéro d'adhérent", "Nom", "Statut", "Procuration"], style: title
+  # Create entries for each item
+  @participants.each do |participant|   
+      proc_cell = ""
+      row_height = 15
+      current_row_height = 0
+      @room.shared_access.where(tic_proc_user: participant.user).each do |shared_access|
+        current_row_height += 15
+        proc_cell += shared_access.user.name + "\n"
+      end
+      if current_row_height > row_height
+        row_height = current_row_height
+      end
+      sheet.add_row [
+        participant.user.id, 
+        participant.user.tic_num_adh, 
+        participant.user.name, 
+        t("vote.status."+participant.tic_status), 
+        proc_cell,
+      ], style:[center, center, center, center, center, center], height: row_height
+  end
+end  

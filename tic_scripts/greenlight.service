@@ -1,0 +1,12 @@
+# systemd service for Greenlight using docker-compose
+ 
+[Unit]
+Description=Greenlight
+ 
+[Service]
+ExecStart=/opt/greenlight/tic_scripts/service start
+ExecStop=/opt/greenlight/tic_scripts/service stop
+RemainAfterExit=yes
+ 
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,33 @@
+<% if participants.empty? %>
+  <%= t("room.no_participants") %>
+<% else %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col"><%= t("user.num_adherent") %></th>
+      <th scope="col"><%= t("user.name") %></th>
+      <th scope="col"><%= t("vote.status_label") %></th>
+      <th scope="col"><%= t("vote.procuration") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% participants.each do |participant| %>
+        <tr>
+          <th scope="row"><%= participant.user.id %></th>
+          <td><%= participant.user.tic_num_adh %></td>
+          <td><%= participant.user.name %></td>
+          <td><%= t("vote.status."+participant.tic_status) %></td>
+          <td>
+            <ul>
+              <% @room.shared_access.where(tic_proc_user: participant.user).each do |shared_access| %>
+                <li><%= shared_access.user.name %></li>
+              <% end %>
+            </ul>
+          </td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>

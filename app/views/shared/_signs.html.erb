@@ -1,0 +1,48 @@
+<% if signs.empty? %>
+  <%= t("room.no_signs") %>
+<% else %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col"><%= t("user.num_adherent") %></th>
+      <th scope="col"><%= t("user.name") %></th>
+      <th scope="col"><%= t("vote.status_label") %></th>
+      <th scope="col"><%= t("vote.procuration") %></th>
+      <th scope="col"><%= t("sign.dates") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% signs.group_by(&:user).each do |user, signs| %>
+      <% if(@room.shared_access.find_by(user: user, tic_status: "v") || @room.shared_access.find_by(tic_proc_user: user)) %>
+        <tr>
+          <th scope="row"><%= user.id %></th>
+          <td><%= user.tic_num_adh %></td>
+          <td><%= user.name %></td>
+          <td><%= t("vote.status."+@room.shared_access.find_by(user: user).tic_status) %></td>
+          <td>
+            <ul>
+              <% @room.shared_access.where(tic_proc_user: user).each do |shared_access| %>
+                <li><%= shared_access.user.name %></li>
+              <% end %>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <% signs.each do |sign| %>
+                <li>
+                  <%= sign.created_at.strftime("%d/%m/%Y: %H:%M") %>
+                  <% if(sign.disconnected_at) %>
+                  - <%= sign.disconnected_at.strftime("%d/%m/%Y: %H:%M") %>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+<% end %>

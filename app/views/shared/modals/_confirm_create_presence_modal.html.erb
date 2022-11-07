@@ -1,0 +1,44 @@
+<%
+# BigBlueButton open source conferencing system - http://www.bigbluebutton.org/.
+# Copyright (c) 2018 BigBlueButton Inc. and by respective authors (see below).
+# This program is free software; you can redistribute it and/or modify it under the
+# terms of the GNU Lesser General Public License as published by the Free Software
+# Foundation; either version 3.0 of the License, or (at your option) any later
+# version.
+#
+# BigBlueButton is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+# You should have received a copy of the GNU Lesser General Public License along
+# with BigBlueButton; if not, see <http://www.gnu.org/licenses/>.
+%>
+
+<div class="modal fade" id="confirmCreatePresenceModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content text-center">
+      <div class="modal-body">
+        <div class="card-body p-6">
+          <div class="card-title">
+            <h3><%= t("modal.confirm_presence.title") %></h3>
+	    	<%= form_for :fake, url: start_room_path(@room), method: :post do |f| %>
+          		<div class="form-group">
+                	<div class="form-check">
+	        	<%= f.check_box :validate_presence,
+        		    required: true,
+	        	    class: "form-check-input",
+	        	    value: "1",
+	        	    autofocus: true
+        	    	%>
+              		<%= f.label(:validate_presence, t("room.validate_presence"), class: "form-control-sm form-check-label") %>
+              		</div>
+            		</div>
+                	<button type="submit" class="btn btn-primary btn-sm px-7 form-control join-form">
+        	    		<%= t("room.start") %>
+               		</button>
+	    	<% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

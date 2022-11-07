@@ -1,0 +1,29 @@
+wb = xlsx_package.workbook
+
+title = wb.styles.add_style(
+	:bg_color=>"666666",
+	:fg_color=>"ffffff",
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] },
+	:alignment=>{:horizontal => :center}
+)
+body = wb.styles.add_style(
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] },
+	:alignment => {:vertical => :center}
+)
+center = wb.styles.add_style(
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] },
+        :alignment=>{:horizontal => :center, :vertical => :center}
+)
+
+wb.add_worksheet(name: "Utilisateurs") do |sheet|
+  # Create the header row
+  sheet.add_row ["#", "Numéro d'adhérent", "Nom"], style: title
+  # Create entries for each item
+  @users.each do |user|   
+      sheet.add_row [
+        user.id, 
+        user.tic_num_adh, 
+        user.name, 
+      ], style:center
+  end
+end  

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+# Bash script to startup all components of home assistant, mostly through
+# docker and checking if services are available using wait-for-it
+ 
+declare -r DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+declare -r WAIT="${DIR}/tic_scripts/wait-for-it.sh"
+ 
+start() {
+    cd ${DIR}
+ 
+    docker-compose up -d db
+    ${WAIT} localhost:5432
+ 
+    docker-compose up -d app
+    ${WAIT} localhost:5000
+    
+    bbb-conf --restart
+}
+ 
+stop() {
+    cd ${DIR}
+    docker-compose stop
+}
+ 
+case $1 in
+    start) start;;
+    stop) stop;;
+    "") start;;
+    *) echo "Usage: ./service start|stop"
+esac

@@ -1,0 +1,40 @@
+<% if votes.empty? %>
+  <%= t("room.no_votes") %>
+<% else %>
+
+<table class="table" style="text_align: center;">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col"><%= t("vote.description") %></th>
+      <th scope="col"><%= t("vote.created_at") %></th>
+      <th scope="col"><%= t("vote.anonymous") %></th>
+      <th scope="col"><%= t("vote.result_yes") %></th>
+      <th scope="col"><%= t("vote.result_no") %></th>
+      <th scope="col"><%= t("vote.result_abs") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% votes.each do |vote| %>
+      <tr class="table-secondary">
+        <th scope="row"><%= vote.id %></th>
+        <td><%= vote.description %></td>
+        <td><%= vote.created_at.strftime("%d/%m/%Y: %H:%M") %></td>
+        <td><%= vote.anonymous ? "<span class='fas fa-check' aria-hidden='true'></span>".html_safe : "<span class='fas fa-times' aria-hidden='true'></span>".html_safe %></td>
+        <td><%= vote.info[:totals][:yes_percentage].to_f.nan? ? "---" : vote.info[:totals][:yes_percentage].round(2).to_s+"%" %></td>
+        <td><%= vote.info[:totals][:no_percentage].to_f.nan? ? "---" : vote.info[:totals][:no_percentage].round(2).to_s+"%" %></td>
+        <td><%= vote.info[:totals][:abs_count] %></td>
+      </tr>
+      <% if !vote.anonymous && vote.results.length > 0 %>
+        <tr>
+          <td colspan="7"><ul>
+            <% vote.results.each do |result| %>
+              <li><%= result[:username] + " : " + t("vote.result_"+result[:value].to_s) + " (" + result[:weight].to_s + ")" %></li>
+            <% end %>
+          </ul></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+<% end %>

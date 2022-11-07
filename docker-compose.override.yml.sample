@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    entrypoint: [bin/start-dev]
+    volumes:
+      - .:/usr/src/app:cached
+      - rails_cache:/app/tmp/cache
+      - bundle:/bundle
+
+volumes:
+  bundle:
+  rails_cache:

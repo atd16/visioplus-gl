@@ -1,0 +1,55 @@
+wb = xlsx_package.workbook
+
+title = wb.styles.add_style(
+	:bg_color=>"666666",
+	:fg_color=>"ffffff",
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] },
+	:alignment=>{:horizontal => :center}
+)
+body = wb.styles.add_style(
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] }
+)
+center = wb.styles.add_style(
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] },
+        :alignment=>{:horizontal => :center}
+)
+
+wb.add_worksheet(name: "Votes") do |sheet|
+  # Create the header row
+  sheet.add_row ["#", "Description", "Créé le", "Anonyme", "Oui", "Non", "Abstention"], style: title
+  # Create entries for each item
+  @votes.each do |vote|
+    sheet.add_row [
+	vote.id, 
+	vote.description, 
+	vote.created_at.strftime("%d/%m/%Y: %H:%M"), 
+	vote.anonymous, 
+	vote.info[:totals][:yes_percentage].to_f.nan? ? "-" : vote.info[:totals][:yes_percentage].round(2).to_s, 
+	vote.info[:totals][:no_percentage].to_f.nan? ? "-" : vote.info[:totals][:no_percentage].round(2).to_s, 
+        vote.info[:totals][:abs_count]
+    ], :style=>[center, body, center, center, center, center, center]
+    if !vote.anonymous && vote.results.length > 0
+      vote.results.each do |result|
+        yes_cell = ""
+        no_cell = ""
+        abs_cell = ""
+        if result[:value] == "yes"
+          yes_cell = "OUI"
+        elsif result[:value] == "no"
+          no_cell = "NON"
+        else
+          abs_cell = "ABS"
+        end
+        sheet.add_row [
+          "",
+          result[:username],
+          "",
+          "",
+          yes_cell,
+          no_cell,
+          abs_cell 
+        ], :style=>[center, body, center, center, center, center, center]
+      end
+    end
+  end
+end  

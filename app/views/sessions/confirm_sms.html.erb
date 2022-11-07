@@ -1,0 +1,37 @@
+<%
+# BigBlueButton open source conferencing system - http://www.bigbluebutton.org/.
+# Copyright (c) 2018 BigBlueButton Inc. and by respective authors (see below).
+# This program is free software; you can redistribute it and/or modify it under the
+# terms of the GNU Lesser General Public License as published by the Free Software
+# Foundation; either version 3.0 of the License, or (at your option) any later
+# version.
+#
+# BigBlueButton is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+# You should have received a copy of the GNU Lesser General Public License along
+# with BigBlueButton; if not, see <http://www.gnu.org/licenses/>.
+%>
+<div class="container">
+  <div class="row pt-7">
+    <div class="col col-lg-6 offset-lg-3">
+      <div class="card">
+        <div class="card-header background">
+          <h4 class="mt-2"><%= t("signup.subtitle") %></h4><br/>
+        </div>
+        <div class="card-body background">
+          <span class="mb-2"><%=t("signup.confirm_sms_message")%></span>
+          <%= form_for @invite, url: confirm_signup_path, method: :post do |f|  %>
+            <div class="form-group">
+              <%= f.label t("signup.fields.smscode"), class: "form-label" %>
+              <%= f.text_field :user_smscode, class: "form-control #{form_is_invalid?(@invite, :user_smscode)}", placeholder: t("signup.fields.smscode") %>
+              <div class="invalid-feedback d-block"><%= @invite.errors.full_messages_for(:user_smscode).first %></div>
+            </div>
+              <%= f.submit t("signup.confirm_sms_title"), class: "btn btn-primary btn-block signin-button" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+@import "bootstrap";
+@import "jquery-ui/sortable";
+@import "font-awesome-sprockets";
+@import "font-awesome";
+@import "monolith.min.scss";
+@import "bootstrap-select.min";
+
+td {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+div.nobreak:before { clear:both; }
+div.nobreak{ page-break-inside: avoid; }

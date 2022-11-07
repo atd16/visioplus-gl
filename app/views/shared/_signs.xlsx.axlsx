@@ -1,0 +1,61 @@
+wb = xlsx_package.workbook
+
+title = wb.styles.add_style(
+	:bg_color=>"666666",
+	:fg_color=>"ffffff",
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] },
+	:alignment=>{:horizontal => :center}
+)
+body = wb.styles.add_style(
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] },
+	:alignment => {:vertical => :center}
+)
+center = wb.styles.add_style(
+	:border => { :style => :thick, :color => "000000", :edges => [:left, :right, :top, :bottom] },
+        :alignment=>{:horizontal => :center, :vertical => :center}
+)
+
+wb.add_worksheet(name: "Signatures") do |sheet|
+  # Create the header row
+  sheet.add_row ["#", "Numéro d'adhérent", "Nom", "Statut", "Procuration", "Dates"], style: title
+  # Create entries for each item
+  @signs.group_by(&:user).each do |user, signs|   
+    if(@room.shared_access.find_by(user: user, tic_status: "v") || @room.shared_access.find_by(tic_proc_user: user)) 
+      signs_cell = ""
+      proc_cell = ""
+      status_cell = ""
+      row_height = 15
+      current_row_height = 0
+      if @room.shared_access.find_by(user: user)
+        status_cell = t("vote.status."+@room.shared_access.find_by(user: user).tic_status)
+      end
+      @room.shared_access.where(tic_proc_user: user).each do |shared_access|
+        current_row_height += 15
+        proc_cell += shared_access.user.name + "\n"
+      end
+      if current_row_height > row_height
+        row_height = current_row_height
+      end
+      current_row_height = 0
+      signs.each do |sign|
+        current_row_height += 15
+        signs_cell += sign.created_at.strftime("%d/%m/%Y: %H:%M")
+        if(sign.disconnected_at)
+          signs_cell += "-" + sign.disconnected_at.strftime("%d/%m/%Y: %H:%M")
+        end
+        signs_cell += "\n"
+      end
+      if current_row_height > row_height
+        row_height = current_row_height
+      end
+      sheet.add_row [
+        user.id, 
+        user.tic_num_adh, 
+        user.name, 
+        status_cell, 
+        proc_cell,
+        signs_cell  
+      ], style:[center, center, center, center, center, center, center], height: row_height
+    end
+  end
+end  

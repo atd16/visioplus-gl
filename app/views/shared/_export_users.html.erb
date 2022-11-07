@@ -1,0 +1,23 @@
+<% if users.empty? %>
+  <%= t("administrator.users.table.export.no_users") %>
+<% else %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col"><%= t("user.num_adherent") %></th>
+      <th scope="col"><%= t("user.name") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% users.each do |user| %>
+        <tr>
+          <td><%= user.id %></td>
+	  <td><%= user.tic_num_adh %></td>
+          <td><%= user.name %></td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
